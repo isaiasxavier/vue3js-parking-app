@@ -1,7 +1,9 @@
 import { reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
+import { useAuth } from '@/stores/auth.js'
 
 export const useRegister = defineStore('register', () => {
+  const auth = useAuth()
   const loading = ref(false)
   const errors = reactive({})
   const form = reactive({
@@ -32,7 +34,7 @@ export const useRegister = defineStore('register', () => {
 
     try {
       const response = await window.axios.post('auth/register', form)
-      console.log(response.data)
+      auth.login(response.data.access_token)
     } catch (error) {
       if (error.response && error.response.status === 422) {
         Object.assign(errors, error.response.data.errors)
