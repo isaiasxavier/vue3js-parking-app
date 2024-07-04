@@ -1,6 +1,7 @@
 <script setup>
 import { onBeforeUnmount } from 'vue'
 import { useRegister } from '@/stores/register'
+import ValidationError from '@/components/ValidationError.vue'
 
 const store = useRegister()
 
@@ -22,6 +23,7 @@ onBeforeUnmount(store.resetForm)
           autocomplete="name"
           required
         />
+        <ValidationError :errors="store.errors" field="name" />
       </div>
 
       <div class="flex flex-col gap-2 mb-4">
@@ -35,6 +37,7 @@ onBeforeUnmount(store.resetForm)
           autocomplete="email"
           required
         />
+        <ValidationError :errors="store.errors" field="email" />
       </div>
 
       <div class="flex flex-col gap-2 mb-4">
@@ -48,6 +51,7 @@ onBeforeUnmount(store.resetForm)
           autocomplete="new-password"
           required
         />
+        <ValidationError :errors="store.errors" field="password" />
       </div>
 
       <div class="flex flex-col gap-2">
@@ -61,6 +65,7 @@ onBeforeUnmount(store.resetForm)
           autocomplete="new-password"
           required
         />
+        <ValidationError :errors="store.errors" field="password_confirmation" />
       </div>
 
       <div class="border-t h-[1px] my-6"></div>
