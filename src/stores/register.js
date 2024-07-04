@@ -15,27 +15,27 @@ export const useRegister = defineStore('register', () => {
     form.email = ''
     form.password = ''
     form.password_confirmation = ''
-
-    errors.value = {}
+    for (const key in errors) {
+      delete errors[key]
+    }
   }
 
   async function handleSubmit() {
-    errors.value = {}
+    for (const key in errors) {
+      delete errors[key]
+    }
 
-    return window.axios
-      .post('auth/register', form)
-      .then((response) => {
-        console.log(response.data)
-      })
-      .catch((error) => {
-        if (error.response.status === 422) {
-          errors.value = error.response.data.errors
-        }
-      })
-      .finally(() => {
-        form.password = ''
-        form.password_confirmation = ''
-      })
+    try {
+      const response = await window.axios.post('auth/register', form)
+      console.log(response.data)
+    } catch (error) {
+      if (error.response && error.response.status === 422) {
+        Object.assign(errors, error.response.data.errors)
+      }
+    } finally {
+      form.password = ''
+      form.password_confirmation = ''
+    }
   }
 
   return { form, errors, resetForm, handleSubmit }
