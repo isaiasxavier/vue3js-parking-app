@@ -2,6 +2,7 @@
 import { onBeforeUnmount } from 'vue'
 import { useRegister } from '@/stores/register'
 import ValidationError from '@/components/ValidationError.vue'
+import IconSpinner from '@/components/icons/IconSpinner.vue'
 
 const store = useRegister()
 
@@ -22,6 +23,7 @@ onBeforeUnmount(store.resetForm)
           class="form-input"
           autocomplete="name"
           required
+          :disabled="store.loading"
         />
         <ValidationError :errors="store.errors" field="name" />
       </div>
@@ -36,6 +38,7 @@ onBeforeUnmount(store.resetForm)
           class="form-input"
           autocomplete="email"
           required
+          :disabled="store.loading"
         />
         <ValidationError :errors="store.errors" field="email" />
       </div>
@@ -50,6 +53,7 @@ onBeforeUnmount(store.resetForm)
           class="form-input"
           autocomplete="new-password"
           required
+          :disabled="store.loading"
         />
         <ValidationError :errors="store.errors" field="password" />
       </div>
@@ -64,6 +68,7 @@ onBeforeUnmount(store.resetForm)
           class="form-input"
           autocomplete="new-password"
           required
+          :disabled="store.loading"
         />
         <ValidationError :errors="store.errors" field="password_confirmation" />
       </div>
@@ -71,7 +76,10 @@ onBeforeUnmount(store.resetForm)
       <div class="border-t h-[1px] my-6"></div>
 
       <div class="flex flex-col gap-2">
-        <button type="submit" class="btn btn-primary">Register</button>
+        <button type="submit" class="btn btn-primary" :disabled="store.loading">
+          Register
+          <IconSpinner v-show="store.loading" />
+        </button>
       </div>
     </div>
   </form>
