@@ -2,6 +2,7 @@ import { computed } from 'vue'
 import { defineStore } from 'pinia'
 import { useStorage } from '@vueuse/core'
 import { useRouter } from 'vue-router'
+import axios from 'axios'
 
 export const useAuth = defineStore('Auth', () => {
   const router = useRouter()
@@ -10,7 +11,7 @@ export const useAuth = defineStore('Auth', () => {
 
   function setAccessToken(value) {
     accessToken.value = value
-    window.axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken.value}`
+    axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken.value}`
   }
 
   function login(accessToken) {
@@ -19,16 +20,16 @@ export const useAuth = defineStore('Auth', () => {
     router.push({ name: 'vehicles.index' })
   }
 
-  function destroyTokenAndRedirecTo(routeName) {
+  function destroyTokenAndRedirectTo(routeName) {
     setAccessToken(null)
     router.push({ name: routeName })
   }
 
   async function logout() {
-    return window.axios.post('auth/logout').finally(() => {
-      destroyTokenAndRedirecTo('register')
+    return axios.post('auth/logout').finally(() => {
+      destroyTokenAndRedirectTo('register')
     })
   }
 
-  return { login, logout, check, destroyTokenAndRedirecTo }
+  return { login, logout, check, destroyTokenAndRedirectTo }
 })
