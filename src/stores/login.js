@@ -31,20 +31,17 @@ export const useLogin = defineStore('login', () => {
       delete errors[key]
     }
 
-    return await axios
-      .post('auth/login', form)
-      .then((response) => {
-        auth.login(response.data.access_token)
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 422) {
-          Object.assign(errors, error.response.data.errors)
-        }
-      })
-      .finally(() => {
-        form.password = ''
-        loading.value = false
-      })
+    try {
+      const response = await axios.post('auth/login', form)
+      auth.login(response.data.access_token)
+    } catch (error) {
+      if (error.response && error.response.status === 422) {
+        Object.assign(errors, error.response.data.errors)
+      }
+    } finally {
+      form.password = ''
+      loading.value = false
+    }
   }
 
   return { form, errors, loading, resetForm, handleSubmit }
