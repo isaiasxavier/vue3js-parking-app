@@ -4,7 +4,7 @@ import { useStorage } from '@vueuse/core'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 
-export const useAuth = defineStore('Auth', () => {
+export const useAuth = defineStore('auth', () => {
   const router = useRouter()
   const accessToken = useStorage('access_token', '')
   const check = computed(() => !!accessToken.value)
@@ -20,14 +20,14 @@ export const useAuth = defineStore('Auth', () => {
     router.push({ name: 'vehicles.index' })
   }
 
-  function destroyTokenAndRedirectTo(routeName) {
+  function destroyTokenAndRedirectTo(routeName = 'login') {
     setAccessToken(null)
     router.push({ name: routeName })
   }
 
   async function logout() {
     return axios.post('auth/logout').finally(() => {
-      destroyTokenAndRedirectTo('register')
+      destroyTokenAndRedirectTo('login')
     })
   }
 
