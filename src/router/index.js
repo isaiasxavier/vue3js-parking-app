@@ -53,6 +53,12 @@ const router = createRouter({
       name: 'profile.change-password',
       beforeEnter: auth,
       component: () => import('@/views/Profile/ChangePasswordView.vue')
+    },
+    {
+      path: '/vehicles/create',
+      name: 'vehicles.create',
+      beforeEnter: auth,
+      component: () => import('@/views/Vehicles/CreateView.vue')
     }
   ]
 })
