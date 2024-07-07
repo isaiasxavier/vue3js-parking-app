@@ -31,12 +31,6 @@ const router = createRouter({
       component: () => import('@/views/Auth/RegisterView.vue')
     },
     {
-      path: '/vehicles',
-      name: 'vehicles.index',
-      beforeEnter: auth,
-      component: () => import('@/views/Vehicles/IndexView.vue')
-    },
-    {
       path: '/login',
       name: 'login',
       beforeEnter: guest,
@@ -55,10 +49,22 @@ const router = createRouter({
       component: () => import('@/views/Profile/ChangePasswordView.vue')
     },
     {
+      path: '/vehicles',
+      name: 'vehicles.index',
+      beforeEnter: auth,
+      component: () => import('@/views/Vehicles/IndexView.vue')
+    },
+    {
       path: '/vehicles/create',
       name: 'vehicles.create',
       beforeEnter: auth,
       component: () => import('@/views/Vehicles/CreateView.vue')
+    },
+    {
+      path: '/vehicles/:id/edit',
+      name: 'vehicles.edit',
+      beforeEnter: auth,
+      component: () => import('@/views/Vehicles/EditView.vue')
     }
   ]
 })
