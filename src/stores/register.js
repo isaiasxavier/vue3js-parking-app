@@ -1,12 +1,14 @@
-import { reactive, ref } from 'vue'
+import { reactive } from 'vue'
 import { defineStore } from 'pinia'
 import { useAuth } from '@/stores/auth.js'
 import axios from 'axios'
+import { useLoading } from '@/composables/useLoading.js'
+import { useErrors } from '@/composables/useErrors.js'
 
 export const useRegister = defineStore('register', () => {
   const auth = useAuth()
-  const loading = ref(false)
-  const errors = reactive({})
+  const { loading, startLoading, stopLoading } = useLoading()
+  const { errors, cleanErrors, setErrors422 } = useErrors()
   const form = reactive({
     name: '',
     email: '',
@@ -19,31 +21,21 @@ export const useRegister = defineStore('register', () => {
     form.email = ''
     form.password = ''
     form.password_confirmation = ''
-    for (const key in errors) {
-      delete errors[key]
-    }
+    cleanErrors()
   }
 
   async function handleSubmit() {
-    if (loading.value) return
-
-    loading.value = true
-
-    for (const key in errors) {
-      delete errors[key]
-    }
-
+    startLoading()
+    cleanErrors()
     try {
       const response = await axios.post('auth/register', form)
       auth.login(response.data.access_token)
     } catch (error) {
-      if (error.response && error.response.status === 422) {
-        Object.assign(errors, error.response.data.errors)
-      }
+      setErrors422(error.response)
     } finally {
       form.password = ''
       form.password_confirmation = ''
-      loading.value = false
+      stopLoading()
     }
   }
 

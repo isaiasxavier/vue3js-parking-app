@@ -1,11 +1,14 @@
 import { defineStore } from 'pinia'
-import { reactive, ref } from 'vue'
+import { reactive } from 'vue'
+import { useStatus } from '@/composables/useStatus.js'
+import { useErrors } from '@/composables/useErrors.js'
+import { useLoading } from '@/composables/useLoading.js'
 import axios from 'axios'
 
 export const useChangePassword = defineStore('change-password', () => {
-  const errors = reactive({})
-  const status = ref('')
-  const loading = ref(false)
+  const { status, setStatus } = useStatus()
+  const { errors, cleanErrors, setErrors422 } = useErrors()
+  const { loading, startLoading, stopLoading } = useLoading()
   const form = reactive({
     current_password: '',
     password: '',
@@ -16,38 +19,31 @@ export const useChangePassword = defineStore('change-password', () => {
     form.current_password = ''
     form.password = ''
     form.password_confirmation = ''
-
-    for (const key in errors) {
-      delete errors[key]
-    }
+    status.value = ''
+    cleanErrors()
   }
 
   async function updatePassword() {
-    if (loading.value) return
-
-    loading.value = true
-    for (const key in errors) {
-      delete errors[key]
-    }
+    startLoading()
+    status.value = ''
+    cleanErrors()
 
     try {
       const response = await axios.put('auth/password', form)
       form.current_password = response.data.current_password
       form.password = response.data.password
       form.password_confirmation = response.data.password_confirmation
-      status.value = 'Password has been updated.'
+      setStatus('Password has been updated.')
     } catch (error) {
-      if (error.response && error.response.status === 422) {
-        Object.assign(errors, error.response.data.errors)
-      }
+      setErrors422(error.response)
     } finally {
       form.current_password = ''
       form.password = ''
       form.password_confirmation = ''
 
-      loading.value = false
+      stopLoading()
     }
   }
 
-  return { form, loading, errors, resetForm, status, updatePassword }
+  return { form, loading, errors, status, resetForm, updatePassword }
 })

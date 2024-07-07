@@ -1,11 +1,14 @@
-import { reactive, ref } from 'vue'
+import { reactive } from 'vue'
 import { defineStore } from 'pinia'
+import { useStatus } from '@/composables/useStatus.js'
+import { useErrors } from '@/composables/useErrors.js'
+import { useLoading } from '@/composables/useLoading.js'
 import axios from 'axios'
 
 export const useProfile = defineStore('profile', () => {
-  const errors = reactive({})
-  const status = ref('')
-  const loading = ref(false)
+  const { status, setStatus } = useStatus()
+  const { errors, cleanErrors, setErrors422 } = useErrors()
+  const { loading, startLoading, stopLoading } = useLoading()
   const form = reactive({
     name: '',
     email: ''
@@ -14,12 +17,8 @@ export const useProfile = defineStore('profile', () => {
   function resetForm() {
     form.name = ''
     form.email = ''
-
     status.value = ''
-
-    for (const key in errors) {
-      delete errors[key]
-    }
+    cleanErrors()
   }
 
   function fetchProfile() {
@@ -30,27 +29,21 @@ export const useProfile = defineStore('profile', () => {
   }
 
   async function updateProfile() {
-    loading.value = true
-
-    for (const key in errors) {
-      delete errors[key]
-    }
-
+    startLoading()
     status.value = ''
+    cleanErrors()
 
     try {
       const response = await axios.put('auth/profile', form)
       form.name = response.data.name
       form.email = response.data.email
-      status.value = 'Profile has been updated.'
+      setStatus('Profile has been updated.')
     } catch (error) {
-      if (error.response && error.response.status === 422) {
-        Object.assign(errors, error.response.data.errors)
-      }
+      setErrors422(error.response)
     } finally {
-      loading.value = false
+      stopLoading()
     }
   }
 
-  return { form, loading, errors, resetForm, status, fetchProfile, updateProfile }
+  return { form, status, errors, loading, resetForm, fetchProfile, updateProfile }
 })
