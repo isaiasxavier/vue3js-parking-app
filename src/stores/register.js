@@ -29,7 +29,7 @@ export const useRegister = defineStore('register', () => {
     cleanErrors()
     try {
       const response = await axios.post('auth/register', form)
-      auth.login(response.data.access_token)
+      await auth.login(response.data.access_token, 'register')
     } catch (error) {
       setErrors422(error.response)
     } finally {

@@ -7,10 +7,10 @@ import axios from 'axios'
 import { redirectTo } from '@/helpers/redirectHelper.js'
 
 export const useParking = defineStore('parking', () => {
-  const { errors, cleanErrors, setErrors422 } = useErrors()
+  const { errors, cleanErrors, setErrors422, setErrors404 } = useErrors()
   const { loading, startLoading, stopLoading } = useLoading()
   const { status, setStatus } = useStatus()
-  const parking = ref([])
+  const parkings = ref([])
   const form = reactive({
     vehicle_id: null,
     zone_id: null
@@ -29,8 +29,8 @@ export const useParking = defineStore('parking', () => {
       await axios.post('parkings/start', form)
       setStatus('Parking has been started!')
       redirectTo('parkings.active')
-    } catch (errors) {
-      setErrors422(errors.response)
+    } catch (error) {
+      setErrors422(error.response)
     } finally {
       form.vehicle_id = null
       form.zone_id = null
@@ -42,17 +42,35 @@ export const useParking = defineStore('parking', () => {
     startLoading()
     cleanErrors()
     try {
-      await axios.post(`parking/stop/${parking.id}`, form)
+      await axios.put(`parkings/${parking.id}`, form)
       setStatus('Parking has been stopped!')
       redirectTo('parkings.active')
-    } catch (errors) {
-      setErrors422(errors.response)
+    } catch (error) {
+      setErrors422(error.response)
     } finally {
-      form.vehicle_id = null
-      form.zone_id = null
       stopLoading()
+      await getActiveParking()
     }
   }
 
-  return { form, parking, status, loading, errors, resetForm, startParking, stopParking }
+  async function getActiveParking() {
+    try {
+      const response = await axios.get('parkings')
+      parkings.value = response.data.data
+    } catch (error) {
+      setErrors404(error.response)
+    }
+  }
+
+  return {
+    form,
+    parkings,
+    status,
+    loading,
+    errors,
+    resetForm,
+    startParking,
+    stopParking,
+    getActiveParking
+  }
 })
