@@ -21,8 +21,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: import('@/views/HomeView.vue')
+      name: 'zone',
+      component: () => import('@/views/Zone/IndexView.vue')
     },
     {
       path: '/register',
@@ -52,19 +52,31 @@ const router = createRouter({
       path: '/vehicles',
       name: 'vehicles.index',
       beforeEnter: auth,
-      component: () => import('@/views/Vehicles/IndexView.vue')
+      component: () => import('@/views/Vehicle/IndexView.vue')
     },
     {
       path: '/vehicles/create',
       name: 'vehicles.create',
       beforeEnter: auth,
-      component: () => import('@/views/Vehicles/CreateView.vue')
+      component: () => import('@/views/Vehicle/CreateView.vue')
     },
     {
       path: '/vehicles/:id/edit',
       name: 'vehicles.edit',
       beforeEnter: auth,
-      component: () => import('@/views/Vehicles/EditView.vue')
+      component: () => import('@/views/Vehicle/EditView.vue')
+    },
+    {
+      path: '/parkings/active',
+      name: 'parkings.active',
+      beforeEnter: auth,
+      component: () => import('@/views/Parking/ActiveParking.vue')
+    },
+    {
+      path: '/parkings/new',
+      name: 'parkings.create',
+      beforeEnter: auth,
+      component: () => import('@/views/Parking/OrderParking.vue')
     }
   ]
 })

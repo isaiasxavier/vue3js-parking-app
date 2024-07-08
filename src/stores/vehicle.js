@@ -9,7 +9,7 @@ import { useStatus } from '@/composables/useStatus.js'
 export const useVehicle = defineStore('vehicles', () => {
   const { status, setStatus } = useStatus()
   const { loading, startLoading, stopLoading } = useLoading()
-  const { errors, cleanErrors, setErrors422 } = useErrors()
+  const { errors, cleanErrors, setErrors422, setErrors404 } = useErrors()
   const vehicles = ref([])
   const form = reactive({
     plate_number: ''
@@ -25,7 +25,7 @@ export const useVehicle = defineStore('vehicles', () => {
       const response = await axios.get('vehicles')
       vehicles.value = response.data.data
     } catch (error) {
-      setStatus('Failed to fetch vehicles:')
+      setErrors404(error.response)
     }
   }
 
@@ -48,7 +48,7 @@ export const useVehicle = defineStore('vehicles', () => {
       const response = await axios.get(`vehicles/${vehicle.id}`)
       form.plate_number = response.data.data.plate_number
     } catch (error) {
-      setStatus('Failed to fetch vehicles.')
+      setErrors404(error.response)
     }
   }
 
@@ -75,8 +75,7 @@ export const useVehicle = defineStore('vehicles', () => {
       setStatus('Vehicle has been deleted.')
       await getVehicles()
     } catch (error) {
-      // Tratamento de erro, se necessário
-      console.error('Erro ao deletar o veículo:', error)
+      setErrors404(error.response)
     } finally {
       stopLoading()
     }

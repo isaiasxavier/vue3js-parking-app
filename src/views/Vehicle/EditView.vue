@@ -16,6 +16,9 @@ watchEffect(async () => {
 <template>
   <form @submit.prevent="store.updateVehicle({ id: route.params.id })" novalidate>
     <div class="flex flex-col mx-auto md:w-96 w-full">
+      <div v-if="store.status" class="alert alert-success">
+        {{ store.status }}
+      </div>
       <h1 class="text-2xl font-bold mb-4 text-center">Edit vehicle</h1>
       <div class="flex flex-col gap-2 mb-4">
         <label for="plate_number" class="required">License plate</label>
@@ -37,7 +40,7 @@ watchEffect(async () => {
           <IconSpinner class="animate-spin" v-show="store.loading" />
           Update vehicle
         </button>
-        <RouterLink :to="{ name: 'vehicles.index' }" class="btn btn-secondary"> Cancel </RouterLink>
+        <RouterLink :to="{ name: 'vehicles.index' }" class="btn btn-secondary"> Cancel</RouterLink>
       </div>
     </div>
   </form>
