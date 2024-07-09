@@ -20,6 +20,9 @@ const auth = useAuth()
           </h2>
           <RouterLink class="router-link" :to="{ name: 'zone' }">Zones</RouterLink>
           <template v-if="auth.check">
+            <RouterLink class="router-link" :to="{ name: 'parkings.history' }">
+              History
+            </RouterLink>
             <RouterLink class="router-link" :to="{ name: 'parkings.active' }">
               Parkings
             </RouterLink>

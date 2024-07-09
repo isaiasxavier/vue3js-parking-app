@@ -27,14 +27,11 @@ onBeforeUnmount(() => clearInterval(interval))
 
     <div class="flex flex-col gap-1">
       <div
-        v-for="parking in store.parkings"
+        v-for="parking in store.parkings.filter((parking) => !parking.stop_time)"
         :key="parking.id"
         class="flex flex-col p-2 border gap-1"
       >
         <div class="plate text-2xl">{{ parking.vehicle.plate_number }}</div>
-        <div class="text-sm text-gray-600">
-          {{ parking.vehicle.description }}
-        </div>
         <div class="bg-gray-100 p-2">
           {{ parking.zone.name }}
           ({{ parking.zone.price_per_hour.toFixed(2) }} &euro;/h)

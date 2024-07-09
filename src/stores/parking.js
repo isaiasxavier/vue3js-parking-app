@@ -11,6 +11,7 @@ export const useParking = defineStore('parking', () => {
   const { loading, startLoading, stopLoading } = useLoading()
   const { status, setStatus } = useStatus()
   const parkings = ref([])
+  const stoppedParking = ref([])
   const form = reactive({
     vehicle_id: null,
     zone_id: null
@@ -62,12 +63,23 @@ export const useParking = defineStore('parking', () => {
     }
   }
 
+  async function getStoppedParking() {
+    try {
+      const response = await axios.get('parkings/history')
+      stoppedParking.value = response.data.data
+    } catch (error) {
+      setErrors404(error.response)
+    }
+  }
+
   return {
     form,
     parkings,
     status,
     loading,
     errors,
+    stoppedParking,
+    getStoppedParking,
     resetForm,
     startParking,
     stopParking,
