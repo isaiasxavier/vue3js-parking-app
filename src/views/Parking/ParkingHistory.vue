@@ -38,7 +38,12 @@ store.getStoppedParking()
           <span class="text-2xl font-bold ml-auto">{{ parking.total_price.toFixed(2) }}</span>
           <span class="pt-0.5">&nbsp;&euro;</span>
         </div>
-        <button type="button" class="btn btn-secondary uppercase">view details</button>
+        <RouterLink
+          :to="{ name: 'parkings.show', params: { id: parking.id } }"
+          class="btn btn-secondary uppercase"
+        >
+          view details
+        </RouterLink>
       </div>
     </div>
   </div>

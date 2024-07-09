@@ -12,6 +12,7 @@ export const useParking = defineStore('parking', () => {
   const { status, setStatus } = useStatus()
   const parkings = ref([])
   const stoppedParking = ref([])
+  const parkingDetails = ref([])
   const form = reactive({
     vehicle_id: null,
     zone_id: null
@@ -21,6 +22,10 @@ export const useParking = defineStore('parking', () => {
     form.vehicle_id = null
     form.zone_id = null
     cleanErrors()
+  }
+
+  function resetParkingDetails() {
+    parkingDetails.value = {}
   }
 
   async function startParking() {
@@ -72,17 +77,32 @@ export const useParking = defineStore('parking', () => {
     }
   }
 
+  async function getParkingDetails(parking) {
+    startLoading()
+    try {
+      const response = await axios.get(`parkings/${parking.id}`)
+      parkingDetails.value = response.data.data
+    } catch (error) {
+      setErrors404(error.response)
+    } finally {
+      stopLoading()
+    }
+  }
+
   return {
     form,
     parkings,
+    parkingDetails,
+    stoppedParking,
     status,
     loading,
     errors,
-    stoppedParking,
     getStoppedParking,
     resetForm,
+    resetParkingDetails,
     startParking,
     stopParking,
-    getActiveParking
+    getActiveParking,
+    getParkingDetails
   }
 })
