@@ -45,7 +45,7 @@ export const useParking = defineStore('parking', () => {
     try {
       await axios.put(`parkings/${parking.id}`, form)
       setStatus('Parking has been stopped!')
-      redirectTo('parkings.active')
+      redirectTo('parkings.history')
     } catch (error) {
       setErrors422(error.response)
     } finally {

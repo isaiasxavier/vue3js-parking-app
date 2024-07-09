@@ -1,6 +1,7 @@
 <script setup>
 import { onBeforeUnmount } from 'vue'
 import { useParking } from '@/stores/parking'
+import { sortParkingsByStartTimeDesc } from '@/helpers/sortParkingsDesc.js'
 
 const store = useParking()
 
@@ -18,7 +19,9 @@ onBeforeUnmount(() => clearInterval(interval))
 <template>
   <div class="flex flex-col mx-auto md:w-96 w-full">
     <h1 class="text-2xl font-bold mb-4 text-center">Active parkings</h1>
-
+    <div class="alert alert-success mb-4" v-show="store.status">
+      {{ store.status }}
+    </div>
     <RouterLink :to="{ name: 'parkings.create' }" class="btn btn-primary w-full">
       Order parking
     </RouterLink>
@@ -27,7 +30,9 @@ onBeforeUnmount(() => clearInterval(interval))
 
     <div class="flex flex-col gap-1">
       <div
-        v-for="parking in store.parkings.filter((parking) => !parking.stop_time)"
+        v-for="parking in sortParkingsByStartTimeDesc(
+          store.parkings.filter((parking) => !parking.stop_time)
+        )"
         :key="parking.id"
         class="flex flex-col p-2 border gap-1"
       >

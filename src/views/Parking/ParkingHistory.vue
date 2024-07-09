@@ -1,5 +1,6 @@
 <script setup>
 import { useParking } from '@/stores/parking'
+import { sortParkingsByStopDesc } from '@/helpers/sortParkingsDesc.js'
 
 const store = useParking()
 
@@ -9,10 +10,14 @@ store.getStoppedParking()
 <template>
   <div class="flex flex-col mx-auto md:w-96 w-full">
     <h1 class="text-2xl font-bold mb-4 text-center">Parking history</h1>
-
+    <div class="alert alert-success mb-4" v-show="store.status">
+      {{ store.status }}
+    </div>
     <div class="flex flex-col gap-1">
       <div
-        v-for="parking in store.stoppedParking.filter((parking) => parking.stop_time)"
+        v-for="parking in sortParkingsByStopDesc(
+          store.stoppedParking.filter((parking) => parking.stop_time)
+        )"
         :key="parking.id"
         class="flex flex-col p-2 border gap-1"
       >
